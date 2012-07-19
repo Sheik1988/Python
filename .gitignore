@@ -1,20 +1,37 @@
 import httplib, urllib
-from_day = int(input("Enter From Day"))
-from_month = int(input("Enter From Month"))
-from_year = int(input("Enter From Year"))
-to_day = int(input("Enter To Day"))
-to_month = int(input("Enter To Month"))
-to_year = int(input("Enter To Year"))
+from scrapy.spider import BaseSpider
 
-def post(from_day, from_month, from_year, to_day, to_month, to_year):
-    params = urllib.urlencode({"ddlday1": from_day, "ddlmonth1": from_month, "ddlyear1": from_year,
-                    "ddlday2": to_day, "ddlmonth2": to_month, "ddlyear2": to_year, "ddlreport": 'A'})
-    headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
-    conn = httplib.HTTPConnection("www.judis.nic.in")
-    conn.request("POST", "/supremecourt/chejudis.asp/query", params, headers)
-    response = conn.getresponse()
-    data = response.read()
-    conn.close()
+class SupremeCourt(BaseSpider):
+    name = "judis"
+    allowed_domains = ["judis.nic.in"]
+    start_url = ["http://judis.nic.in/supremecourt/chejudis.asp"]
     
-print post(from_day, from_month, from_year, to_day, to_month, to_year)
+    def parse(self, response):
+        pass
     
+    from_day = int(input("Enter From Day"))
+    from_month = int(input("Enter From Month"))
+    from_year = int(input("Enter From Year"))
+    to_day = int(input("Enter To Day"))
+    to_month = int(input("Enter To Month"))
+    to_year = int(input("Enter To Year"))
+
+    def post(self, from_day, from_month, from_year, to_day, to_month, to_year):
+        params = urllib.urlencode({"ddlday1": self.from_day, "ddlmonth1": self.from_month, "ddlyear1": self.from_year,
+                        "ddlday2": self.to_day, "ddlmonth2": self.to_month, "ddlyear2": self.to_year, "ddlreport": 'A'})
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn = httplib.HTTPConnection("www.judis.nic.in")
+        conn.request("POST", "/supremecourt/chejudis.asp/query", params, headers)
+        response = conn.getresponse()
+        data = response.read()
+        conn.close()
+    
+    Cname = SupremeCourt(BaseSpider)
+    Cname.post(from_day, from_month, from_year, to_day, to_month, to_year)
+    
+    
+    
+    
+    
+        
+
