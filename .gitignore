@@ -1,1 +1,20 @@
-print "Welcome"
+import httplib, urllib
+from_day = int(input("Enter From Day"))
+from_month = int(input("Enter From Month"))
+from_year = int(input("Enter From Year"))
+to_day = int(input("Enter To Day"))
+to_month = int(input("Enter To Month"))
+to_year = int(input("Enter To Year"))
+
+def post(from_day, from_month, from_year, to_day, to_month, to_year):
+    params = urllib.urlencode({"ddlday1": from_day, "ddlmonth1": from_month, "ddlyear1": from_year,
+                    "ddlday2": to_day, "ddlmonth2": to_month, "ddlyear2": to_year, "ddlreport": 'A'})
+    headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+    conn = httplib.HTTPConnection("www.judis.nic.in")
+    conn.request("POST", "/supremecourt/chejudis.asp/query", params, headers)
+    response = conn.getresponse()
+    data = response.read()
+    conn.close()
+    
+print post(from_day, from_month, from_year, to_day, to_month, to_year)
+    
