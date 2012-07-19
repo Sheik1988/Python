@@ -1,14 +1,8 @@
 import httplib, urllib
 from scrapy.spider import BaseSpider
+from scrapy.selector import HtmlXPathSelector
 
-class SupremeCourt(BaseSpider):
-    name = "judis"
-    allowed_domains = ["judis.nic.in"]
-    start_url = ["http://judis.nic.in/supremecourt/chejudis.asp"]
-    
-    def parse(self, response):
-        pass
-    
+class SupremecourtPost:
     from_day = int(input("Enter From Day"))
     from_month = int(input("Enter From Month"))
     from_year = int(input("Enter From Year"))
@@ -25,9 +19,24 @@ class SupremeCourt(BaseSpider):
         response = conn.getresponse()
         data = response.read()
         conn.close()
+        hxs = HtmlXPathSelector(data)
+        sites = hxs.select("//table[@id='Table1']/table[@id='DataGrid1']/tr[2]")
+        for site in sites:
+            link = site.select("@/href")
+            
+class SupremecourtSpider(BaseSpider, SupremecourtPost):
+    name = "judis"
+    allowed_domains = ["judis.nic.in"]
+    start_url = [link]
     
-    Cname = SupremeCourt(BaseSpider)
-    Cname.post(from_day, from_month, from_year, to_day, to_month, to_year)
+    def parse(self, response):
+        filename = response.url.split("/")[-2]
+        open(filename, 'wb').write(response.body)
+           
+Cname = SupremecourtPost()
+Cname.post(from_day, from_month, from_year, to_day, to_month, to_year)
+    
+
     
     
     
